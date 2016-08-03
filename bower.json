@@ -1,0 +1,28 @@
+{
+  "name": "weatherJS",
+  "description": "bower install bootstrap --save",
+  "main": "bower install moment --save",
+  "keywords": [
+    "npm",
+    "install",
+    "bower-files",
+    "--save-dev"
+  ],
+  "authors": [
+    "npm install browser-sync --save-dev"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.1.0",
+    "bootstrap": "^3.3.7",
+    "moment": "^2.14.1"
+  }
+}
