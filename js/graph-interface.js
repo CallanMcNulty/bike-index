@@ -1,5 +1,21 @@
 var Chart = require('./../node_modules/chart.js/src/chart.js');
 var TheftData = require('./../js/TheftData.js').theftDataModule;
+var mapsApiKey = require('./../.env');
+
+var findZip = function(startIndex, zipCodes) {
+  if(zipCodes[startIndex]) {
+    $("#zip-code").append('<option id="'+zipCodes[startIndex]+'" value="'+zipCodes[startIndex]+'">'+zipCodes[startIndex]+'</option>');
+    $('#'+zipCodes[startIndex]).attr('selected', 'selected');
+    $("#zip-code").trigger("change");
+    console.log($('#zip-code').val());
+    $('.zip-readout').text(zipCodes[startIndex]);
+  } else {
+    return;
+  }
+  setTimeout(function(){
+    findZip(startIndex+1, zipCodes);
+  }, 1000);
+}
 
 var displayTheftDataChart = function(zipCodes, zipCodeTheftNumbers) {
   var cty = $('#chart-numbers-by-zip');
@@ -24,48 +40,10 @@ var displayTheftDataChart = function(zipCodes, zipCodeTheftNumbers) {
       }
     }
   });
+  findZip(0,zipCodes);
 };
 $(document).ready(function() {
   $(".graph-display-button").click(function() {
-    var theftData = new TheftData(displayTheftDataChart);
-    theftData.generateZipCodeArrays(1);
-    // var ctx = $('#chart-js-hello');
-    // var myChart = new Chart(ctx, {
-    //   type: 'bar',
-    //   data: {
-    //     labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-    //     datasets: [{
-    //       label: '# of Votes',
-    //       data: [12, 19, 3, 5, 2, 3],
-    //       backgroundColor: [
-    //         'rgba(255, 99, 132, 0.2)',
-    //         'rgba(54, 162, 235, 0.2)',
-    //         'rgba(255, 206, 86, 0.2)',
-    //         'rgba(75, 192, 192, 0.2)',
-    //         'rgba(153, 102, 255, 0.2)',
-    //         'rgba(255, 159, 64, 0.2)'
-    //       ],
-    //       borderColor: [
-    //         'rgba(255,99,132,1)',
-    //         'rgba(54, 162, 235, 1)',
-    //         'rgba(255, 206, 86, 1)',
-    //         'rgba(75, 192, 192, 1)',
-    //         'rgba(153, 102, 255, 1)',
-    //         'rgba(255, 159, 64, 1)'
-    //       ],
-    //       borderWidth: 1
-    //     }]
-    //   },
-    //   options: {
-    //     scales: {
-    //       yAxes: [{
-    //         ticks: {
-    //           beginAtZero:true
-    //         }
-    //       }]
-    //     }
-    //   }
-    // });
-
+    
   });
 });
