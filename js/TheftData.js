@@ -6,8 +6,8 @@ function TheftData(displayFunction){
 
 TheftData.prototype.generateZipCodeArrays = function(pageNumber){
   var theftDataObject = this;
-  $.get("https://bikeindex.org/api/v2/bikes_search/stolen?page="+ pageNumber + "&per_page=100&proximity=97209&proximity_square=100").then(function(response, displayFunction) {
-    if(response.bikes.length == 0){
+  $.get("https://bikeindex.org/api/v2/bikes_search/stolen?page="+ pageNumber + "&per_page=100&proximity=97209&proximity_square=10").then(function(response, displayFunction) {
+    if(response.bikes.length === 0){
       theftDataObject.displayFunction(theftDataObject.zipCodes, theftDataObject.zipCodeTheftNumbers);
       return false;
     }
@@ -26,12 +26,10 @@ TheftData.prototype.generateZipCodeArrays = function(pageNumber){
           theftDataObject.zipCodeTheftNumbers.push(1);
         }
       } else {
-        theftDataObject.zipCodeTheftNumbers[zipCodes.indexOf(zipCode)] += 1;
+        theftDataObject.zipCodeTheftNumbers[theftDataObject.zipCodes.indexOf(zipCode)] += 1;
       }
     }
     theftDataObject.generateZipCodeArrays(pageNumber+1);
-    // console.log(theftDataObject.zipCodes);
-    // console.log(theftDataObject.zipCodeTheftNumbers);
   });
 };
 

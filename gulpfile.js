@@ -55,7 +55,7 @@ gulp.task("clean", function(){
   return del(['build', 'tmp']);
 });
 
-gulp.task('jshint', function(){
+gulp.task('jshint', ['build'], function(){
   return gulp.src(['js/*.js'])
   .pipe(jshint())
   .pipe(jshint.reporter('default'));
@@ -85,7 +85,7 @@ gulp.task('bowerBuild', ['bower'], function(){
 gulp.task('htmlBuild', ['bower'], function(){
   browserSync.reload();
 });
-gulp.task('cssBuild', function() {
+gulp.task('cssBuild', ['htmlBuild'], function() {
   return gulp.src(['scss/*.scss'])
   .pipe(sourcemaps.init())
   .pipe(sass())
