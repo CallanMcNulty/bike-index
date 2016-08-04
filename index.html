@@ -19,9 +19,8 @@
       <button class="btn-success graph-display-button">Display the GRAPH!</button>
       <div class="graph-output">
       </div>
-      <canvas id="chart-numbers-by-zip"></canvas>
-      <select id="zip-code" selected="97202">
-        <option value="97202">97202</option>
+      <div class="canvas-div"><canvas id="chart-numbers-by-zip"></canvas></div>
+      <select id="zip-code">
       </select>
       <h1>There have been bike thefts in <span class=zip-readout></span></h1>
       <p>Zip codes can be viewed in a tooltip when hovering on a pin.</p>
@@ -44,6 +43,9 @@
         }, 1000);
       }
       var displayTheftDataChart = function(zipCodes, zipCodeTheftNumbers) {
+        $("#chart-numbers-by-zip").remove();
+        $(".canvas-div").append('<canvas id="chart-numbers-by-zip"></canvas>');
+        $(".graph-display-button").attr("class", "btn-success graph-display-button-2")
         var cty = $('#chart-numbers-by-zip');
         var myChart = new Chart(cty, {
           type: 'bar',
@@ -68,25 +70,32 @@
         });
         $("#zip-code").empty();
         findZip(0,zipCodes);
+        return myChart;
       };
 
+      var j = 0;
       function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 11,
           center: {lat: -34.397, lng: 150.644}
         });
         var geocoder = new google.maps.Geocoder();
-
         var markers = [];
+        var theftNumbers = [];
         $("#zip-code").change(function() {
-          geocodeAddress(geocoder, map, $(this).val(), markers);
+          geocodeAddress(geocoder, map, $(this).val(), markers, theftNumbers);
+
         }).change();
 
         $(".graph-display-button").click(function() {
+          markers.forEach(function(marker) {
+            marker.setMap(null);
+          });
           geocoder.geocode({'address': $("#city").val()}, function(results, status) {
             if (status === 'OK') {
               var theftData = new TheftData(results[0].geometry.location.lat().toString()+","+results[0].geometry.location.lng(), displayTheftDataChart);
-              theftData.generateZipCodeArrays(1);
+              theftNumbers = theftData.zipCodeTheftNumbers;
+              var myChart = theftData.generateZipCodeArrays(1);
             } else {
               alert('Geocode was not successful for the following reason: ' + status);
             }
@@ -94,7 +103,7 @@
         });
       }
 
-      function geocodeAddress(geocoder, resultsMap, address, markerArray) {
+      function geocodeAddress(geocoder, resultsMap, address, markerArray, theftNumbers) {
         geocoder.geocode({'address': address}, function(results, status) {
           if (status === 'OK') {
             resultsMap.setCenter(results[0].geometry.location);
@@ -103,6 +112,17 @@
               position: results[0].geometry.location,
               title: address
             }));
+            var contentString = "Zip Code: " + address + ", Number of thefts: " + theftNumbers[j];
+            var infowindow = new google.maps.InfoWindow({
+              content: contentString
+            });
+            markerArray[j].addListener('click', function() {
+              infowindow.open(map, markerArray[j]);
+            });
+            j++;
+            if(j >= theftNumbers.length - 1 ){
+              j = 0;
+            }
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
           }
